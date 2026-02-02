@@ -8,19 +8,29 @@ import java.util.Properties;
 
 public class DatabaseConnectionManager {
     private static final Properties properties = new Properties();
-    private static void loadProperties(){
-        try(FileInputStream input = new FileInputStream("src/main/resources/application.properties")) {
+
+    private static void loadProperties() {
+        try (FileInputStream input = new FileInputStream(
+                "/home/coder/app/server/src/main/resources/application.properties")) {
             properties.load(input);
         } catch (Exception e) {
-            System.err.println("Error loading properties file: "+e.getMessage());
+            System.err.println("Error loading properties file: " + e.getMessage());
         }
     }
-    public static Connection getConnection() throws SQLException{
-        loadProperties();
-        String url = properties.getProperty("db.url");
-        String username = properties.getProperty("db.username");
-        String password = properties.getProperty("db.password");
 
-        return DriverManager.getConnection(url,username,password);
+    public static Connection getConnection() {
+        Connection connection=null;
+        try {
+            loadProperties();
+            String url = properties.getProperty("spring.datasource.url");
+            String username = properties.getProperty("spring.datasource.username");
+            String password = properties.getProperty("spring.datasource.password");
+
+            connection = DriverManager.getConnection(url, username, password);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return connection;
     }
 }
