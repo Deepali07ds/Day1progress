@@ -26,6 +26,27 @@ public class PatientServiceImplJpa implements PatientService {
         Patient p = patientRepository.save(patient);
         return p.getPatientId();
     }
+    @Override
+    public Patient getPatientById(int patientId) throws Exception{
+        return patientRepository.findByPatientId(patientId).orElse(null);
+    }
+
+    public void updatePatient(Patient patient) throws Exception{
+        if (patientRepository.existsById(patient.getPatientId())) {
+            Patient p = getPatientById(patient.getPatientId());
+            p.setAddress(patient.getAddress());
+            p.setContactNumber(patient.getContactNumber());
+            p.setDateOfBirth(patient.getDateOfBirth());
+            p.setEmail(patient.getEmail());
+            p.setFullName(patient.getFullName());
+            patientRepository.save(p);
+        }
+    }
+    public void deletePatient(int patientId)throws Exception{
+        if (patientRepository.existsById(patientId)) {
+            patientRepository.deleteById(patientId);
+        }
+    }
 
     @Override
     public List<Patient> getAllPatientSortedByName() throws Exception {

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class PatientController {
         
     }
 
-    @GetMapping("/{patientID}")
+    @GetMapping("/{patientId}")
     public ResponseEntity<Patient> getPatientById(@PathVariable int patientId) throws Exception{
         
         return ResponseEntity.status(HttpStatus.OK).body(patientService.getPatientById(patientId));
@@ -48,8 +49,8 @@ public class PatientController {
         
     }
 
-    @PutMapping("/{patientID}")
-    public ResponseEntity<Void> updatePatient(@PathVariable int patientId,@RequestBody Patient patient) {
+    @PutMapping("/{patientId}")
+    public ResponseEntity<Void> updatePatient(@PathVariable Integer patientId,@RequestBody Patient patient) {
         try {
             patient.setPatientId(patientId);
             patientService.updatePatient(patient);
@@ -59,17 +60,18 @@ public class PatientController {
         }
     }
 
-    @DeleteMapping("/{patientID}")
-    public ResponseEntity<Void> deletePatient(int patientId) {
+    @DeleteMapping("/{patientId}")
+    public ResponseEntity<Void> deletePatient(@PathVariable int patientId) {
         try {
             patientService.deletePatient(patientId);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } 
+        catch(PatientNotFoundException pn){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            // return ResponseEntity.noContent().build();
         }
-        // }catch(PatientNotFoundException pn){
-        //     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        // }
         
     }
 

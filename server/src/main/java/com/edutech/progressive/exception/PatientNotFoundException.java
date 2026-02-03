@@ -1,4 +1,4 @@
 package com.edutech.progressive.exception;
 
-public class PatientNotFoundException {
+public class PatientNotFoundException extends Exception{
 }
